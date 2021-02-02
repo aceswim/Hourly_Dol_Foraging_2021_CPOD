@@ -98,5 +98,17 @@ dfHourT <- as.data.frame(subset(df_hour, Foraging!="FALSE"))
 # write.csv(dfHourT, "PotomacMay2019_PropHrlyForaging.csv")
 # Note: Manually input the file name from d0 into the first column
 
-write.csv(dfHourT, "PotomacOct2019_PropHrlyForaging.csv")
+# write.csv(dfHourT, "PotomacOct2019_PropHrlyForaging.csv")
+# Note: Manually input the file name from d0 into the first column
+
+# write.csv(dfHourT, "PotomacJun2018_PropHrlyForaging.csv")
+# Note: Manually input the file name from d0 into the first column
+
+# write.csv(dfHourT, "PotomacJun2017_HrlyForaging.csv")
+# Note: Manually input the file name from d0 into the first column
+
+# write.csv(dfHourT, "PotomacMay2017_HrlyForaging.csv")
+# Note: Manually input the file name from d0 into the first column
+
+# write.csv(dfHourT, "PotomacMay2016_HrlyForaging.csv")
 # Note: Manually input the file name from d0 into the first column
