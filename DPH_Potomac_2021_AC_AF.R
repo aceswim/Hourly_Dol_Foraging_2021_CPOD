@@ -25,7 +25,7 @@ library(reshape2)
 
 # Location of CPOD data (working directory)
 
-CPODdata <- "F:/Marine Mammal Lab Work/CPOD_Foraging_2021/Foraging_2021_CPOD"
+CPODdata <- "F:/Marine Mammal Lab Work/CPOD_Foraging_2021/Hourly_Dol_Foraging_2021_CPOD/Hourly_Dol_Foraging_2021_CPOD"
 
 # files must be in the format of Site Date POD# file01 Dol DPM/ICI.txt
 filenames <- list.files(path = CPODdata, pattern = 'Dol ICIs.txt')
@@ -95,7 +95,7 @@ dfHourT <- as.data.frame(subset(df_hour, Foraging!="FALSE"))
 ## Once the file is written, go back up to line 48 and change j= to the next
 ## file until all have been analyzed
 
-write.csv(dfHourT, "PotomacMay2019_PropHrlyForaging.csv")
+# write.csv(dfHourT, "PotomacMay2019_PropHrlyForaging.csv")
 # Note: Manually input the file name from d0 into the first column
 
 write.csv(dfHourT, "PotomacOct2019_PropHrlyForaging.csv")
