@@ -90,6 +90,25 @@ dfHourT <- as.data.frame(subset(df_hour, Foraging!="FALSE"))
 ## Note: n = number of foraging events in that hour
 
 
+# Visualize Results -------------------------------------------------------
+
+# Load in data
+HourlyF = read.csv("F:/Marine Mammal Lab Work/CPOD_Foraging_2021/Hourly_Dol_Foraging_2021_CPOD/Hourly_Dol_Foraging_2021_CPOD/Hourly_Foraging_Results/Master_All_Hourly_Foraging_Results_Potomac_CPOD_AC.csv") 
+
+# Create year, month, day columns
+
+#format date column
+HourlyF$Date <- as.POSIXct(HourlyF$Date, format = '%m/%d/%Y')
+
+HourlyF$Year <- format(HourlyF$Date, format = "%Y")
+HourlyF$Month <- format(HourlyF$Date, format = "%m")
+HourlyF$Day <- format(HourlyF$Date, format = "%d")
+
+# Calculate proportions
+# Need proportion of hours with events per month
+# Need proportion of days with events per hour
+
+
 # Write CSV file for each result ------------------------------------------
 
 ## Once the file is written, go back up to line 48 and change j= to the next
