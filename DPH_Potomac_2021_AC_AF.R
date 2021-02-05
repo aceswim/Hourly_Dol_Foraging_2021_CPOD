@@ -108,6 +108,23 @@ HourlyF$Day <- format(HourlyF$Date, format = "%d")
 # Need proportion of hours with events per month
 # Need proportion of days with events per hour
 
+#Subset into each year
+
+HourlyF_2017 <- filter(HourlyF, Year == 2017)
+HourlyF_2018 <- filter(HourlyF, Year == 2018)
+HourlyF_2019 <- filter(HourlyF, Year == 2019)
+
+
+# Attempt plotting
+a <- HourlyF_2017 %>%
+  group_by(Hour) %>%
+  mutate(percent_forage = Total_Foraging_Events / sum(Total_Foraging_Events) * 100)
+
+plota <- ggplot(a, aes(x = Hour, y = percent_forage)) +
+  geom_col()
+plota
+# Did not work...bars all same size...need to fix
+
 
 # Write CSV file for each result ------------------------------------------
 
