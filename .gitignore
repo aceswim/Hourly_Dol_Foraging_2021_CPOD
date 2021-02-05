@@ -2,7 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
-.txt
-.CP3
+*.txt
+*.CP3
 
 
