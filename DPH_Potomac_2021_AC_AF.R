@@ -150,9 +150,9 @@ plota <- ggplot(a, aes(x = Month, y = percent_forage)) +
   scale_y_continuous(limits = c(0,100))
 plota
 
-# Look at percent foraging by hour
+# Look at percent foraging by hour (days with foraging events per hour?)
 b <- HourlyF_2017 %>%
-  group_by(Hour) %>%
+  group_by(Day, Hour) %>%
   summarize(Hourly_totals = sum(Total_Foraging_Events))%>%
   mutate(percent_forage = Hourly_totals/ sum(Hourly_totals) * 100)
 
@@ -160,7 +160,8 @@ View(b)
 
 plotb <- ggplot(b, aes(x = Hour, y = percent_forage)) +
   geom_col()+
-  scale_y_continuous(limits = c(0,100))
+  scale_y_continuous(limits = c(0,100))+
+  scale_x_continuous(limits = c(0,23,1))
 plotb
-
+# fix x scale
 
