@@ -115,15 +115,19 @@ HourlyF_2018 <- filter(HourlyF, Year == 2018)
 HourlyF_2019 <- filter(HourlyF, Year == 2019)
 
 
-# Attempt plotting
+# Look at percent foraging by month
 a <- HourlyF_2017 %>%
-  group_by(Hour) %>%
-  mutate(percent_forage = Total_Foraging_Events / sum(Total_Foraging_Events) * 100)
+  group_by(Month) %>%
+  summarize(Montly_totals = sum(Total_Foraging_Events))%>%
+  mutate(percent_forage = Montly_totals/ sum(Montly_totals) * 100)
 
-plota <- ggplot(a, aes(x = Hour, y = percent_forage)) +
-  geom_col()
+View(a)
+
+plota <- ggplot(a, aes(x = Month, y = percent_forage)) +
+  geom_col()+
+  scale_y_continuous(lim = c(0,100))
 plota
-# Did not work...bars all same size...need to fix
+
 
 
 # Write CSV file for each result ------------------------------------------
