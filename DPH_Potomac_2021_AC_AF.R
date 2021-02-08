@@ -89,6 +89,28 @@ df_hour <- df %>%
 dfHourT <- as.data.frame(subset(df_hour, Foraging!="FALSE"))
 ## Note: n = number of foraging events in that hour
 
+# Write CSV file for each result ------------------------------------------
+
+## Once the file is written, go back up to line 48 and change j= to the next
+## file until all have been analyzed
+
+# write.csv(dfHourT, "PotomacMay2019_PropHrlyForaging.csv")
+# Note: Manually input the file name from d0 into the first column
+
+# write.csv(dfHourT, "PotomacOct2019_PropHrlyForaging.csv")
+# Note: Manually input the file name from d0 into the first column
+
+# write.csv(dfHourT, "PotomacJun2018_PropHrlyForaging.csv")
+# Note: Manually input the file name from d0 into the first column
+
+# write.csv(dfHourT, "PotomacJun2017_HrlyForaging.csv")
+# Note: Manually input the file name from d0 into the first column
+
+# write.csv(dfHourT, "PotomacMay2017_HrlyForaging.csv")
+# Note: Manually input the file name from d0 into the first column
+
+# write.csv(dfHourT, "PotomacMay2016_HrlyForaging.csv")
+# Note: Manually input the file name from d0 into the first column
 
 # Visualize Results -------------------------------------------------------
 
@@ -125,30 +147,20 @@ View(a)
 
 plota <- ggplot(a, aes(x = Month, y = percent_forage)) +
   geom_col()+
-  scale_y_continuous(lim = c(0,100))
+  scale_y_continuous(limits = c(0,100))
 plota
 
+# Look at percent foraging by hour
+b <- HourlyF_2017 %>%
+  group_by(Hour) %>%
+  summarize(Hourly_totals = sum(Total_Foraging_Events))%>%
+  mutate(percent_forage = Hourly_totals/ sum(Hourly_totals) * 100)
+
+View(b)
+
+plotb <- ggplot(b, aes(x = Hour, y = percent_forage)) +
+  geom_col()+
+  scale_y_continuous(limits = c(0,100))
+plotb
 
 
-# Write CSV file for each result ------------------------------------------
-
-## Once the file is written, go back up to line 48 and change j= to the next
-## file until all have been analyzed
-
-# write.csv(dfHourT, "PotomacMay2019_PropHrlyForaging.csv")
-# Note: Manually input the file name from d0 into the first column
-
-# write.csv(dfHourT, "PotomacOct2019_PropHrlyForaging.csv")
-# Note: Manually input the file name from d0 into the first column
-
-# write.csv(dfHourT, "PotomacJun2018_PropHrlyForaging.csv")
-# Note: Manually input the file name from d0 into the first column
-
-# write.csv(dfHourT, "PotomacJun2017_HrlyForaging.csv")
-# Note: Manually input the file name from d0 into the first column
-
-# write.csv(dfHourT, "PotomacMay2017_HrlyForaging.csv")
-# Note: Manually input the file name from d0 into the first column
-
-# write.csv(dfHourT, "PotomacMay2016_HrlyForaging.csv")
-# Note: Manually input the file name from d0 into the first column
