@@ -126,16 +126,53 @@ HourlyF$Year <- format(HourlyF$Date, format = "%Y")
 HourlyF$Month <- format(HourlyF$Date, format = "%m")
 HourlyF$Day <- format(HourlyF$Date, format = "%d")
 
+#Get general overview look
+MonthPotomac<-as.data.frame(tapply(HourlyF$Total_Foraging_Events,list(HourlyF$Month,HourlyF$Year),sum))
+HourPotomac<-as.data.frame(tapply(HourlyF$Total_Foraging_Events,list(HourlyF$Hour,HourlyF$Year),sum))
+
+# Load color blind friendly palette
+cbp1 <- c("#999999", "#E69F00", "#56B4E9", "#009E73",
+          "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+#Plot Monthly and Hourly Foraging Event Totals for all years
+
+# Month
+plot_month <- ggplot(data = HourlyF, mapping = aes(x = Month, y = Total_Foraging_Events, fill = Year))+
+  geom_bar(stat = "identity", position = "dodge")+
+  scale_fill_manual(values = cbp1)+
+  scale_y_continuous(name = "Total Foraging Events", limits = c(0,50))
+plot_month
+
+# Hour
+plot_hour <- ggplot(data = HourlyF, mapping = aes(x = Hour, y = Total_Foraging_Events, fill = Year))+
+  geom_bar(stat = "identity", position = "dodge")+
+  scale_fill_manual(values = cbp1)+
+  scale_y_continuous(name = "Total Foraging Events", breaks = seq(0,55,5))+
+  scale_x_continuous(name = "Hour (EST)", breaks = seq(0,23,1))
+plot_hour
+
 # Calculate proportions
 # Need proportion of hours with events per month
 # Need proportion of days with events per hour
+
+# Look at percent foraging by month
+a_all <- HourlyF %>%
+  group_by(Month, Year) %>%
+  summarize(Montly_totals = sum(Total_Foraging_Events))%>%
+  mutate(percent_forage = Montly_totals/ sum(Montly_totals) * 100)
+
+View(a_all)
+
+plot_month_all <- ggplot(a_all, aes(x = Month, y = percent_forage, fill = Year)) +
+  geom_bar(stat = "identity", position = "dodge")+
+  scale_y_continuous(limits = c(0,100))
+plot_month_all
 
 #Subset into each year
 
 HourlyF_2017 <- filter(HourlyF, Year == 2017)
 HourlyF_2018 <- filter(HourlyF, Year == 2018)
 HourlyF_2019 <- filter(HourlyF, Year == 2019)
-
 
 # Look at percent foraging by month
 a <- HourlyF_2017 %>%
@@ -150,18 +187,18 @@ plota <- ggplot(a, aes(x = Month, y = percent_forage)) +
   scale_y_continuous(limits = c(0,100))
 plota
 
-# Look at percent foraging by hour (days with foraging events per hour?)
+# Look at percent foraging by hour (Of the foraging events detected, what percent occurred in each hour)
 b <- HourlyF_2017 %>%
-  group_by(Day, Hour) %>%
-  summarize(Hourly_totals = sum(Total_Foraging_Events))%>%
-  mutate(percent_forage = Hourly_totals/ sum(Hourly_totals) * 100)
+  group_by(Hour) %>%
+  summarize(Hourly_event_totals = sum(Total_Foraging_Events))%>%
+  mutate(percent_forage = Hourly_event_totals/ sum(Hourly_event_totals) * 100)
 
 View(b)
 
 plotb <- ggplot(b, aes(x = Hour, y = percent_forage)) +
   geom_col()+
-  scale_y_continuous(limits = c(0,100))+
-  scale_x_continuous(limits = c(0,23,1))
+  scale_y_continuous(name = "Percent of Foraging Events", limits = c(0,100))+
+  scale_x_continuous(name = "Hour (EST)", breaks = seq(0,23,1))
 plotb
-# fix x scale
+
 
