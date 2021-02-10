@@ -112,7 +112,79 @@ dfHourT <- as.data.frame(subset(df_hour, Foraging!="FALSE"))
 # write.csv(dfHourT, "PotomacMay2016_HrlyForaging.csv")
 # Note: Manually input the file name from d0 into the first column
 
+## dfHour versions
+
+# write.csv(df_hour, "PotomacMay2019_Hrly_Dol_Dets.csv")
+# Note: Manually input the file name from d0 into the first column
+
 # Visualize Results -------------------------------------------------------
+
+# * All Dolphin Detections ------------------------------------------------
+# Load in data
+HourlyDets = read.csv("F:/Marine Mammal Lab Work/CPOD_Foraging_2021/Hourly_Dol_Foraging_2021_CPOD/Hourly_Dol_Foraging_2021_CPOD/Hourly_Foraging_Results/Master_All_Hourly_Foraging_NonForaging_Results.csv") 
+
+# Create year, month, day columns
+
+#format date column
+HourlyDets$Date <- as.POSIXct(HourlyDets$Date, format = '%m/%d/%Y')
+
+HourlyDets$Year <- format(HourlyDets$Date, format = "%Y")
+HourlyDets$Month <- format(HourlyDets$Date, format = "%m")
+HourlyDets$Day <- format(HourlyDets$Date, format = "%d")
+
+# Visualize 
+
+# Load color blind friendly palette
+cbp1 <- c("#999999", "#E69F00", "#56B4E9", "#009E73",
+          "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+#Plot Monthly and Hourly Foraging Event Totals for all years
+
+# Month
+plot_month_all_dets <- ggplot(data = HourlyDets, mapping = aes(x = Month, y = Total_Events, fill = Foraging))+
+  geom_bar(stat = "identity", position = "dodge")+
+  scale_fill_manual(values = cbp1)+
+  scale_y_continuous(name = "Total Detection Events", limits = c(0,50))+
+  ggtitle("Dolphin Foraging Occurence in the Potomac 2019")
+plot_month_all_dets
+
+# Hour
+plot_hour_all_dets <- ggplot(data = HourlyDets, mapping = aes(x = Hour, y = Total_Events, fill = Foraging))+
+  geom_bar(stat = "identity", position = "dodge")+
+  scale_fill_manual(values = cbp1)+
+  scale_y_continuous(name = "Total Detection Events", breaks = seq(0,55,5))+
+  scale_x_continuous(name = "Hour (EST)", breaks = seq(0,23,1))+
+  ggtitle("Dolphin Foraging Occurence in Potomac 2019")
+plot_hour_all_dets
+
+# Proportion of foraging events
+
+# Month
+
+#Get monthly totals for all events
+pot2019_alldets <- HourlyDets %>%
+  group_by(Month) %>%
+  summarize(Montly_totals_alldets = sum(Total_Events))
+
+# Get monthly totals for only foraging events
+pot2019_foragingdets <- filter(HourlyDets, Foraging == TRUE)%>%
+  group_by(Month) %>%
+  summarize(Montly_foraging_totals = sum(Total_Events))
+
+# Merge by Month
+pot2019_propF_month <- as.data.frame(merge(pot2019_alldets, pot2019_foragingdets, by = "Month"))
+
+pot2019_propF_month <- pot2019_propF_month %>%
+  mutate(percent_forage = Montly_foraging_totals/ sum(Montly_totals_alldets) * 100)
+
+plot_pot2019_alldets <- ggplot(pot2019_propF_month, aes(x = Month, y = percent_forage)) +
+  geom_col()+
+  theme_minimal()+
+  scale_y_continuous(name = "Percent Total Foraging Events", limits = c(0,100))+
+  ggtitle("2019 Potomac Foraging Occurrence")
+plot_pot2019_alldets
+
+# * Foraging Events Only ----------------------------------------------------
 
 # Load in data
 HourlyF = read.csv("F:/Marine Mammal Lab Work/CPOD_Foraging_2021/Hourly_Dol_Foraging_2021_CPOD/Hourly_Dol_Foraging_2021_CPOD/Hourly_Foraging_Results/Master_All_Hourly_Foraging_Results_Potomac_CPOD_AC.csv") 
@@ -164,20 +236,21 @@ pot_monthhr_all_years
 # Need proportion of days with events per hour
 
 # Look at percent foraging by month
-a_all <- HourlyF %>%
-  group_by(Month, Year) %>%
-  summarize(Montly_totals = sum(Total_Foraging_Events))%>%
-  mutate(percent_forage = Montly_totals/ sum(Montly_totals) * 100)
-
-View(a_all)
-
-plot_month_all <- ggplot(a_all, aes(x = Month, y = percent_forage, fill = Year)) +
-  geom_col()+
-  scale_fill_manual(values = cbp1)+
-  scale_y_continuous(limits = c(0,100))
-plot_month_all
+# a_all <- HourlyF %>%
+#   group_by(Month, Year) %>%
+#   summarize(Montly_totals = sum(Total_Foraging_Events))%>%
+#   mutate(percent_forage = Montly_totals/ sum(Montly_totals) * 100)
+# 
+# View(a_all)
+# 
+# plot_month_all <- ggplot(a_all, aes(x = Month, y = percent_forage, fill = Year)) +
+#   geom_col()+
+#   scale_fill_manual(values = cbp1)+
+#   scale_y_continuous(limits = c(0,100))
+# plot_month_all
 
 # Not working how I want, so subset into each year
+
 # Month
 pot2016 <- filter(HourlyF, Year == 2016) %>%
   group_by(Month) %>%
