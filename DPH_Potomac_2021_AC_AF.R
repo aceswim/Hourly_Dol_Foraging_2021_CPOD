@@ -140,7 +140,8 @@ cbp1 <- c("#999999", "#E69F00", "#56B4E9", "#009E73",
 plot_month <- ggplot(data = HourlyF, mapping = aes(x = Month, y = Total_Foraging_Events, fill = Year))+
   geom_bar(stat = "identity", position = "dodge")+
   scale_fill_manual(values = cbp1)+
-  scale_y_continuous(name = "Total Foraging Events", limits = c(0,50))
+  scale_y_continuous(name = "Total Foraging Events", limits = c(0,50))+
+  ggtitle("Monthly Dolphin Foraging Events in Potomac")
 plot_month
 
 # Hour
@@ -148,8 +149,15 @@ plot_hour <- ggplot(data = HourlyF, mapping = aes(x = Hour, y = Total_Foraging_E
   geom_bar(stat = "identity", position = "dodge")+
   scale_fill_manual(values = cbp1)+
   scale_y_continuous(name = "Total Foraging Events", breaks = seq(0,55,5))+
-  scale_x_continuous(name = "Hour (EST)", breaks = seq(0,23,1))
+  scale_x_continuous(name = "Hour (EST)", breaks = seq(0,23,1))+
+  ggtitle("Hourly Dolphin Foraging Events in Potomac")
 plot_hour
+
+# Combine month and hourly plots
+library(cowplot)
+
+pot_monthhr_all_years <- plot_grid(plot_month, plot_hour, labels = "AUTO", label_size = 12)
+pot_monthhr_all_years
 
 # Calculate proportions
 # Need proportion of hours with events per month
@@ -164,12 +172,127 @@ a_all <- HourlyF %>%
 View(a_all)
 
 plot_month_all <- ggplot(a_all, aes(x = Month, y = percent_forage, fill = Year)) +
-  geom_bar(stat = "identity", position = "dodge")+
+  geom_col()+
+  scale_fill_manual(values = cbp1)+
   scale_y_continuous(limits = c(0,100))
 plot_month_all
 
-#Subset into each year
+# Not working how I want, so subset into each year
+# Month
+pot2016 <- filter(HourlyF, Year == 2016) %>%
+  group_by(Month) %>%
+  summarize(Montly_totals = sum(Total_Foraging_Events))%>%
+  mutate(percent_forage = Montly_totals/ sum(Montly_totals) * 100)
 
+plot_pot2016 <- ggplot(pot2016, aes(x = Month, y = percent_forage)) +
+  geom_col()+
+  theme_minimal()+
+  scale_y_continuous(name = "Percent Total Foraging Events", limits = c(0,100))+
+  ggtitle("2016 Potomac Foraging Occurrence")
+plot_pot2016
+
+pot2017 <- filter(HourlyF, Year == 2017) %>%
+  group_by(Month) %>%
+  summarize(Montly_totals = sum(Total_Foraging_Events))%>%
+  mutate(percent_forage = Montly_totals/ sum(Montly_totals) * 100)
+
+plot_pot2017 <- ggplot(pot2017, aes(x = Month, y = percent_forage)) +
+  geom_col()+
+  theme_minimal()+
+  scale_y_continuous(name = "Percent Total Foraging Events", limits = c(0,100))+
+  ggtitle("2017 Potomac Foraging Occurrence")
+plot_pot2017
+
+pot2018 <- filter(HourlyF, Year == 2018) %>%
+  group_by(Month) %>%
+  summarize(Montly_totals = sum(Total_Foraging_Events))%>%
+  mutate(percent_forage = Montly_totals/ sum(Montly_totals) * 100)
+
+plot_pot2018 <- ggplot(pot2018, aes(x = Month, y = percent_forage)) +
+  geom_col()+
+  theme_minimal()+
+  scale_y_continuous(name = "Percent Total Foraging Events", limits = c(0,100))+
+  ggtitle("2018 Potomac Foraging Occurrence")
+plot_pot2018
+
+pot2019 <- filter(HourlyF, Year == 2019) %>%
+  group_by(Month) %>%
+  summarize(Montly_totals = sum(Total_Foraging_Events))%>%
+  mutate(percent_forage = Montly_totals/ sum(Montly_totals) * 100)
+
+plot_pot2019 <- ggplot(pot2019, aes(x = Month, y = percent_forage)) +
+  geom_col()+
+  theme_minimal()+
+  scale_y_continuous(name = "Percent Total Foraging Events", limits = c(0,100))+
+  ggtitle("2019 Potomac Foraging Occurrence")
+plot_pot2019
+
+# Plot all monthly plots in one figure
+
+library(cowplot)
+
+plot_pot_month_all <- plot_grid(plot_pot2016, plot_pot2017, plot_pot2018, plot_pot2019, labels = "AUTO", label_size = 12)
+plot_pot_month_all
+
+# Look at percent foraging by hour (Of the foraging events detected, what percent occurred in each hour)
+
+pot2016hr <- filter(HourlyF, Year == 2016) %>%
+  group_by(Hour) %>%
+  summarize(Hourly_event_totals = sum(Total_Foraging_Events))%>%
+  mutate(percent_forage = Hourly_event_totals/ sum(Hourly_event_totals) * 100)
+
+plot_pot2016hr <- ggplot(pot2016hr, aes(x = Hour, y = percent_forage)) +
+  geom_col()+
+  scale_y_continuous(name = "Percent of Foraging Events", limits = c(0,15))+
+  scale_x_continuous(name = "Hour (EST)", breaks = seq(0,23,1))+
+  ggtitle("2016 Potomac Foraging Occurrence")
+plot_pot2016hr
+
+pot2017hr <- filter(HourlyF, Year == 2017) %>%
+  group_by(Hour) %>%
+  summarize(Hourly_event_totals = sum(Total_Foraging_Events))%>%
+  mutate(percent_forage = Hourly_event_totals/ sum(Hourly_event_totals) * 100)
+
+plot_pot2017hr <- ggplot(pot2017hr, aes(x = Hour, y = percent_forage)) +
+  geom_col()+
+  scale_y_continuous(name = "Percent of Foraging Events", limits = c(0,15))+
+  scale_x_continuous(name = "Hour (EST)", breaks = seq(0,23,1))+
+  ggtitle("2017 Potomac Foraging Occurrence")
+plot_pot2017hr
+
+pot2018hr <- filter(HourlyF, Year == 2018) %>%
+  group_by(Hour) %>%
+  summarize(Hourly_event_totals = sum(Total_Foraging_Events))%>%
+  mutate(percent_forage = Hourly_event_totals/ sum(Hourly_event_totals) * 100)
+
+plot_pot2018hr <- ggplot(pot2018hr, aes(x = Hour, y = percent_forage)) +
+  geom_col()+
+  scale_y_continuous(name = "Percent of Foraging Events", limits = c(0,15))+
+  scale_x_continuous(name = "Hour (EST)", breaks = seq(0,23,1))+
+  ggtitle("2018 Potomac Foraging Occurrence")
+plot_pot2018hr
+
+pot2019hr <- filter(HourlyF, Year == 2019) %>%
+  group_by(Hour) %>%
+  summarize(Hourly_event_totals = sum(Total_Foraging_Events))%>%
+  mutate(percent_forage = Hourly_event_totals/ sum(Hourly_event_totals) * 100)
+
+plot_pot2019hr <- ggplot(pot2019hr, aes(x = Hour, y = percent_forage)) +
+  geom_col()+
+  scale_y_continuous(name = "Percent of Foraging Events", limits = c(0,15))+
+  scale_x_continuous(name = "Hour (EST)", breaks = seq(0,23,1))+
+  ggtitle("2019 Potomac Foraging Occurrence")
+plot_pot2019hr
+
+# Plot all monthly plots in one figure
+
+library(cowplot)
+
+plot_pot_hr_all <- plot_grid(plot_pot2016hr, plot_pot2017hr, plot_pot2018hr, plot_pot2019hr, labels = "AUTO", label_size = 12)
+plot_pot_hr_all
+# Old attempts code -------------------------------------------------------
+
+# Create actual subset dataframes
 HourlyF_2017 <- filter(HourlyF, Year == 2017)
 HourlyF_2018 <- filter(HourlyF, Year == 2018)
 HourlyF_2019 <- filter(HourlyF, Year == 2019)
