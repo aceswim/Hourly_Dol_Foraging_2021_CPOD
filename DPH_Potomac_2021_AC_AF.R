@@ -233,19 +233,19 @@ plot_hour_all_dets
 #Get monthly totals for all events
 pot2019_alldets <- filter(HourlyDets, Year == 2019) %>%
   group_by(Month) %>%
-  summarize(Montly_totals_alldets = sum(Total_Events))
+  summarize(Monthly_totals_alldets = sum(Total_Events))
 
 # Get monthly totals for only foraging events
 pot2019_foragingdets <- filter(HourlyDets, Year == 2019) %>%
   filter(Foraging == TRUE)%>%
   group_by(Month) %>%
-  summarize(Montly_foraging_totals = sum(Total_Events))
+  summarize(Monthly_foraging_totals = sum(Total_Events))
 
 # Merge by Month
 pot2019_propF_month <- as.data.frame(merge(pot2019_alldets, pot2019_foragingdets, by = "Month"))
 
 pot2019_propF_month <- pot2019_propF_month %>%
-  mutate(percent_forage = Montly_foraging_totals/ Montly_totals_alldets * 100)
+  mutate(percent_forage = Monthly_foraging_totals/ Monthly_totals_alldets * 100)
 
 plot_pot2019_alldets <- ggplot(pot2019_propF_month, aes(x = Month, y = percent_forage)) +
   geom_col()+
@@ -260,19 +260,19 @@ plot_pot2019_alldets
 #Get monthly totals for all events
 pot2018_alldets <- filter(HourlyDets, Year == 2018) %>%
   group_by(Month) %>%
-  summarize(Montly_totals_alldets = sum(Total_Events))
+  summarize(Monthly_totals_alldets = sum(Total_Events))
 
 # Get monthly totals for only foraging events
 pot2018_foragingdets <- filter(HourlyDets, Year == 2018) %>%
   filter(Foraging == TRUE)%>%
   group_by(Month) %>%
-  summarize(Montly_foraging_totals = sum(Total_Events))
+  summarize(Monthly_foraging_totals = sum(Total_Events))
 
 # Merge by Month
 pot2018_propF_month <- as.data.frame(merge(pot2018_alldets, pot2018_foragingdets, by = "Month"))
 
 pot2018_propF_month <- pot2018_propF_month %>%
-  mutate(percent_forage = Montly_foraging_totals/ Montly_totals_alldets * 100)
+  mutate(percent_forage = Monthly_foraging_totals/ Monthly_totals_alldets * 100)
 
 plot_pot2018_alldets <- ggplot(pot2018_propF_month, aes(x = Month, y = percent_forage)) +
   geom_col()+
@@ -286,19 +286,19 @@ plot_pot2018_alldets
 #Get monthly totals for all events
 pot2017_alldets <- filter(HourlyDets, Year == 2017) %>%
   group_by(Month) %>%
-  summarize(Montly_totals_alldets = sum(Total_Events))
+  summarize(Monthly_totals_alldets = sum(Total_Events))
 
 # Get monthly totals for only foraging events
 pot2017_foragingdets <- filter(HourlyDets, Year == 2017) %>%
   filter(Foraging == TRUE)%>%
   group_by(Month) %>%
-  summarize(Montly_foraging_totals = sum(Total_Events))
+  summarize(Monthly_foraging_totals = sum(Total_Events))
 
 # Merge by Month
 pot2017_propF_month <- as.data.frame(merge(pot2017_alldets, pot2017_foragingdets, by = "Month"))
 
 pot2017_propF_month <- pot2017_propF_month %>%
-  mutate(percent_forage = Montly_foraging_totals/ Montly_totals_alldets * 100)
+  mutate(percent_forage = Monthly_foraging_totals/ Monthly_totals_alldets * 100)
 
 plot_pot2017_alldets <- ggplot(pot2017_propF_month, aes(x = Month, y = percent_forage)) +
   geom_col()+
@@ -312,19 +312,19 @@ plot_pot2017_alldets
 #Get monthly totals for all events
 pot2016_alldets <- filter(HourlyDets, Year == 2016) %>%
   group_by(Month) %>%
-  summarize(Montly_totals_alldets = sum(Total_Events))
+  summarize(Monthly_totals_alldets = sum(Total_Events))
 
 # Get monthly totals for only foraging events
 pot2016_foragingdets <- filter(HourlyDets, Year == 2016) %>%
   filter(Foraging == TRUE)%>%
   group_by(Month) %>%
-  summarize(Montly_foraging_totals = sum(Total_Events))
+  summarize(Monthly_foraging_totals = sum(Total_Events))
 
 # Merge by Month
 pot2016_propF_month <- as.data.frame(merge(pot2016_alldets, pot2016_foragingdets, by = "Month"))
 
 pot2016_propF_month <- pot2016_propF_month %>%
-  mutate(percent_forage = Montly_foraging_totals/ Montly_totals_alldets * 100)
+  mutate(percent_forage = Monthly_foraging_totals/ Monthly_totals_alldets * 100)
 
 plot_pot2016_alldets <- ggplot(pot2016_propF_month, aes(x = Month, y = percent_forage)) +
   geom_col()+
@@ -475,44 +475,79 @@ HourlyF$Day <- format(HourlyF$Date, format = "%d")
 MonthPotomac<-as.data.frame(tapply(HourlyF$Total_Foraging_Events,list(HourlyF$Month,HourlyF$Year),sum))
 HourPotomac<-as.data.frame(tapply(HourlyF$Total_Foraging_Events,list(HourlyF$Hour,HourlyF$Year),sum))
 
+
+# * * Plot Monthly and Hourly Foraging Event Totals for all years ---------
+
 # Load color blind friendly palette
 cbp1 <- c("#999999", "#E69F00", "#56B4E9", "#009E73",
           "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 
-#Plot Monthly and Hourly Foraging Event Totals for all years
+# * * * Month -------------------------------------------------------------
 
-# Month
-plot_month <- ggplot(data = HourlyF, mapping = aes(x = Month, y = Total_Foraging_Events, fill = Year))+
-  geom_bar(stat = "identity", position = "dodge")+
+# plot_month <- ggplot(data = HourlyF, mapping = aes(x = Month, y = Total_Foraging_Events, fill = Year))+
+#   geom_bar(stat = "identity", position = "dodge")+
+#   scale_fill_manual(values = cbp1)+
+#   scale_y_continuous(name = "Total Foraging Events", limits = c(0,50))+
+#   ggtitle("Monthly Dolphin Foraging Events in Potomac")
+# plot_month
+
+#Redo
+plot_month <- ggplot(data = HourlyF, mapping = aes(x = Month, weight = Total_Foraging_Events, fill = Year))+
+  geom_bar(stat = "count", position = "dodge")+
   scale_fill_manual(values = cbp1)+
-  scale_y_continuous(name = "Total Foraging Events", limits = c(0,50))+
-  ggtitle("Monthly Dolphin Foraging Events in Potomac")
+  scale_y_continuous(name = "Total Foraging Events")+
+  ggtitle("Dolphin Foraging Events in the Potomac by Month")
 plot_month
 
-# Hour
-plot_hour <- ggplot(data = HourlyF, mapping = aes(x = Hour, y = Total_Foraging_Events, fill = Year))+
-  geom_bar(stat = "identity", position = "dodge")+
+plot_month2 <- ggplot(data = HourlyF, mapping = aes(x = Month, weight = Total_Foraging_Events))+
+  geom_bar(stat = "count", position = "dodge")+
   scale_fill_manual(values = cbp1)+
-  scale_y_continuous(name = "Total Foraging Events", breaks = seq(0,55,5))+
+  scale_y_continuous(name = "Total Foraging Events")+
+  facet_wrap(~Year)+
+  ggtitle("Dolphin Foraging Events in the Potomac by Month")
+plot_month2
+
+# * * * Hour --------------------------------------------------------------
+
+# plot_hour <- ggplot(data = HourlyF, mapping = aes(x = Hour, y = Total_Foraging_Events, fill = Year))+
+#   geom_bar(stat = "identity", position = "dodge")+
+#   scale_fill_manual(values = cbp1)+
+#   scale_y_continuous(name = "Total Foraging Events", breaks = seq(0,55,5))+
+#   scale_x_continuous(name = "Hour (EST)", breaks = seq(0,23,1))+
+#   ggtitle("Hourly Dolphin Foraging Events in Potomac")
+# plot_hour
+
+# Redo
+plot_hour <- ggplot(data = HourlyF, mapping = aes(x = Hour, weight = Total_Foraging_Events, fill = Year))+
+  geom_bar(stat = "count", position = "dodge")+
+  scale_fill_manual(values = cbp1)+
   scale_x_continuous(name = "Hour (EST)", breaks = seq(0,23,1))+
-  ggtitle("Hourly Dolphin Foraging Events in Potomac")
+  scale_y_continuous(name = "Total Detection Events", breaks = seq(0,500,100))+
+  ggtitle("Dolphin Foraging Events in the Potomac by Hour")
 plot_hour
 
-# Combine month and hourly plots
-library(cowplot)
+plot_hour2 <- ggplot(data = HourlyF, mapping = aes(x = Hour, weight = Total_Foraging_Events))+
+  geom_bar(stat = "count", position = "dodge")+
+  scale_fill_manual(values = cbp1)+
+  scale_x_continuous(name = "Hour (EST)", breaks = seq(0,23,1))+
+  scale_y_continuous(name = "Total Detection Events", breaks = seq(0,500,100))+
+  facet_wrap(~Year)+
+  ggtitle("Dolphin Foraging Events in the Potomac by Hour")
+plot_hour2
 
-pot_monthhr_all_years <- plot_grid(plot_month, plot_hour, labels = "AUTO", label_size = 12)
-pot_monthhr_all_years
+# Combine month and hourly plots?
+# library(cowplot)
+# 
+# pot_monthhr_all_years <- plot_grid(plot_month, plot_hour, labels = "AUTO", label_size = 12)
+# pot_monthhr_all_years
 
-# Calculate proportions
-# Need proportion of hours with events per month
-# Need proportion of days with events per hour
+# * *  Proportion of Foraging Events per Month and Hour -------------------
 
 # Look at percent foraging by month
 # a_all <- HourlyF %>%
 #   group_by(Month, Year) %>%
-#   summarize(Montly_totals = sum(Total_Foraging_Events))%>%
-#   mutate(percent_forage = Montly_totals/ sum(Montly_totals) * 100)
+#   summarize(Monthly_totals = sum(Total_Foraging_Events))%>%
+#   mutate(percent_forage = Monthly_totals/ sum(Monthly_totals) * 100)
 # 
 # View(a_all)
 # 
@@ -524,11 +559,14 @@ pot_monthhr_all_years
 
 # Not working how I want, so subset into each year
 
-# Month
+# * * * Month -------------------------------------------------------------
+
+# * * * * 2016 ------------------------------------------------------------
+
 pot2016 <- filter(HourlyF, Year == 2016) %>%
   group_by(Month) %>%
-  summarize(Montly_totals = sum(Total_Foraging_Events))%>%
-  mutate(percent_forage = Montly_totals/ sum(Montly_totals) * 100)
+  summarize(Monthly_totals = sum(Total_Foraging_Events))%>%
+  mutate(percent_forage = Monthly_totals/ sum(Monthly_totals) * 100)
 
 plot_pot2016 <- ggplot(pot2016, aes(x = Month, y = percent_forage)) +
   geom_col()+
@@ -537,10 +575,13 @@ plot_pot2016 <- ggplot(pot2016, aes(x = Month, y = percent_forage)) +
   ggtitle("2016 Potomac Foraging Occurrence")
 plot_pot2016
 
+
+# * * * * 2017 ------------------------------------------------------------
+
 pot2017 <- filter(HourlyF, Year == 2017) %>%
   group_by(Month) %>%
-  summarize(Montly_totals = sum(Total_Foraging_Events))%>%
-  mutate(percent_forage = Montly_totals/ sum(Montly_totals) * 100)
+  summarize(Monthly_totals = sum(Total_Foraging_Events))%>%
+  mutate(percent_forage = Monthly_totals/ sum(Monthly_totals) * 100)
 
 plot_pot2017 <- ggplot(pot2017, aes(x = Month, y = percent_forage)) +
   geom_col()+
@@ -549,10 +590,13 @@ plot_pot2017 <- ggplot(pot2017, aes(x = Month, y = percent_forage)) +
   ggtitle("2017 Potomac Foraging Occurrence")
 plot_pot2017
 
+
+# * * * * 2018 ------------------------------------------------------------
+
 pot2018 <- filter(HourlyF, Year == 2018) %>%
   group_by(Month) %>%
-  summarize(Montly_totals = sum(Total_Foraging_Events))%>%
-  mutate(percent_forage = Montly_totals/ sum(Montly_totals) * 100)
+  summarize(Monthly_totals = sum(Total_Foraging_Events))%>%
+  mutate(percent_forage = Monthly_totals/ sum(Monthly_totals) * 100)
 
 plot_pot2018 <- ggplot(pot2018, aes(x = Month, y = percent_forage)) +
   geom_col()+
@@ -561,10 +605,13 @@ plot_pot2018 <- ggplot(pot2018, aes(x = Month, y = percent_forage)) +
   ggtitle("2018 Potomac Foraging Occurrence")
 plot_pot2018
 
+
+# * * * * 2019 ------------------------------------------------------------
+
 pot2019 <- filter(HourlyF, Year == 2019) %>%
   group_by(Month) %>%
-  summarize(Montly_totals = sum(Total_Foraging_Events))%>%
-  mutate(percent_forage = Montly_totals/ sum(Montly_totals) * 100)
+  summarize(Monthly_totals = sum(Total_Foraging_Events))%>%
+  mutate(percent_forage = Monthly_totals/ sum(Monthly_totals) * 100)
 
 plot_pot2019 <- ggplot(pot2019, aes(x = Month, y = percent_forage)) +
   geom_col()+
@@ -573,14 +620,19 @@ plot_pot2019 <- ggplot(pot2019, aes(x = Month, y = percent_forage)) +
   ggtitle("2019 Potomac Foraging Occurrence")
 plot_pot2019
 
-# Plot all monthly plots in one figure
+
+# * * * * Combine plots ---------------------------------------------------
 
 library(cowplot)
 
 plot_pot_month_all <- plot_grid(plot_pot2016, plot_pot2017, plot_pot2018, plot_pot2019, labels = "AUTO", label_size = 12)
 plot_pot_month_all
 
+
+# * * * Hour --------------------------------------------------------------
 # Look at percent foraging by hour (Of the foraging events detected, what percent occurred in each hour)
+
+# * * * * 2016 ------------------------------------------------------------
 
 pot2016hr <- filter(HourlyF, Year == 2016) %>%
   group_by(Hour) %>%
@@ -594,6 +646,9 @@ plot_pot2016hr <- ggplot(pot2016hr, aes(x = Hour, y = percent_forage)) +
   ggtitle("2016 Potomac Foraging Occurrence")
 plot_pot2016hr
 
+
+# * * * * 2017 ------------------------------------------------------------
+
 pot2017hr <- filter(HourlyF, Year == 2017) %>%
   group_by(Hour) %>%
   summarize(Hourly_event_totals = sum(Total_Foraging_Events))%>%
@@ -605,6 +660,9 @@ plot_pot2017hr <- ggplot(pot2017hr, aes(x = Hour, y = percent_forage)) +
   scale_x_continuous(name = "Hour (EST)", breaks = seq(0,23,1))+
   ggtitle("2017 Potomac Foraging Occurrence")
 plot_pot2017hr
+
+
+# * * * * 2018 ------------------------------------------------------------
 
 pot2018hr <- filter(HourlyF, Year == 2018) %>%
   group_by(Hour) %>%
@@ -618,6 +676,8 @@ plot_pot2018hr <- ggplot(pot2018hr, aes(x = Hour, y = percent_forage)) +
   ggtitle("2018 Potomac Foraging Occurrence")
 plot_pot2018hr
 
+# * * * * 2019 ------------------------------------------------------------
+
 pot2019hr <- filter(HourlyF, Year == 2019) %>%
   group_by(Hour) %>%
   summarize(Hourly_event_totals = sum(Total_Foraging_Events))%>%
@@ -630,44 +690,12 @@ plot_pot2019hr <- ggplot(pot2019hr, aes(x = Hour, y = percent_forage)) +
   ggtitle("2019 Potomac Foraging Occurrence")
 plot_pot2019hr
 
-# Plot all monthly plots in one figure
+
+# * * * * Combine plots ---------------------------------------------------
+# Plot all hourly plots in one figure
 
 library(cowplot)
 
 plot_pot_hr_all <- plot_grid(plot_pot2016hr, plot_pot2017hr, plot_pot2018hr, plot_pot2019hr, labels = "AUTO", label_size = 12)
 plot_pot_hr_all
-# Old attempts code -------------------------------------------------------
-
-# Create actual subset dataframes
-HourlyF_2017 <- filter(HourlyF, Year == 2017)
-HourlyF_2018 <- filter(HourlyF, Year == 2018)
-HourlyF_2019 <- filter(HourlyF, Year == 2019)
-
-# Look at percent foraging by month
-a <- HourlyF_2017 %>%
-  group_by(Month) %>%
-  summarize(Montly_totals = sum(Total_Foraging_Events))%>%
-  mutate(percent_forage = Montly_totals/ sum(Montly_totals) * 100)
-
-View(a)
-
-plota <- ggplot(a, aes(x = Month, y = percent_forage)) +
-  geom_col()+
-  scale_y_continuous(limits = c(0,100))
-plota
-
-# Look at percent foraging by hour (Of the foraging events detected, what percent occurred in each hour)
-b <- HourlyF_2017 %>%
-  group_by(Hour) %>%
-  summarize(Hourly_event_totals = sum(Total_Foraging_Events))%>%
-  mutate(percent_forage = Hourly_event_totals/ sum(Hourly_event_totals) * 100)
-
-View(b)
-
-plotb <- ggplot(b, aes(x = Hour, y = percent_forage)) +
-  geom_col()+
-  scale_y_continuous(name = "Percent of Foraging Events", limits = c(0,100))+
-  scale_x_continuous(name = "Hour (EST)", breaks = seq(0,23,1))
-plotb
-
 
