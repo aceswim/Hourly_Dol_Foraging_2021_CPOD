@@ -203,7 +203,7 @@ pot2019_foragingdets <- filter(HourlyDets, Year == 2019) %>%
 pot2019_propF_month <- as.data.frame(merge(pot2019_alldets, pot2019_foragingdets, by = "Month"))
 
 pot2019_propF_month <- pot2019_propF_month %>%
-  mutate(percent_forage = Montly_foraging_totals/ sum(Montly_totals_alldets) * 100)
+  mutate(percent_forage = Montly_foraging_totals/ Montly_totals_alldets * 100)
 
 plot_pot2019_alldets <- ggplot(pot2019_propF_month, aes(x = Month, y = percent_forage)) +
   geom_col()+
@@ -230,7 +230,7 @@ pot2018_foragingdets <- filter(HourlyDets, Year == 2018) %>%
 pot2018_propF_month <- as.data.frame(merge(pot2018_alldets, pot2018_foragingdets, by = "Month"))
 
 pot2018_propF_month <- pot2018_propF_month %>%
-  mutate(percent_forage = Montly_foraging_totals/ sum(Montly_totals_alldets) * 100)
+  mutate(percent_forage = Montly_foraging_totals/ Montly_totals_alldets * 100)
 
 plot_pot2018_alldets <- ggplot(pot2018_propF_month, aes(x = Month, y = percent_forage)) +
   geom_col()+
@@ -256,7 +256,7 @@ pot2017_foragingdets <- filter(HourlyDets, Year == 2017) %>%
 pot2017_propF_month <- as.data.frame(merge(pot2017_alldets, pot2017_foragingdets, by = "Month"))
 
 pot2017_propF_month <- pot2017_propF_month %>%
-  mutate(percent_forage = Montly_foraging_totals/ sum(Montly_totals_alldets) * 100)
+  mutate(percent_forage = Montly_foraging_totals/ Montly_totals_alldets * 100)
 
 plot_pot2017_alldets <- ggplot(pot2017_propF_month, aes(x = Month, y = percent_forage)) +
   geom_col()+
@@ -282,7 +282,7 @@ pot2016_foragingdets <- filter(HourlyDets, Year == 2016) %>%
 pot2016_propF_month <- as.data.frame(merge(pot2016_alldets, pot2016_foragingdets, by = "Month"))
 
 pot2016_propF_month <- pot2016_propF_month %>%
-  mutate(percent_forage = Montly_foraging_totals/ sum(Montly_totals_alldets) * 100)
+  mutate(percent_forage = Montly_foraging_totals/ Montly_totals_alldets * 100)
 
 plot_pot2016_alldets <- ggplot(pot2016_propF_month, aes(x = Month, y = percent_forage)) +
   geom_col()+
@@ -301,21 +301,119 @@ pot_month_all_years
 
 # * * * Hour --------------------------------------------------------------
 
-
 # * * * * 2019 ------------------------------------------------------------
 
+#Get Hourly totals for all events
+pot2019_alldets_hr <- filter(HourlyDets, Year == 2019) %>%
+  group_by(Hour) %>%
+  summarize(Hourly_totals_alldets = sum(Total_Events))
+
+# Get Hourly totals for only foraging events
+pot2019_foragingdets_hr <- filter(HourlyDets, Year == 2019) %>%
+  filter(Foraging == TRUE)%>%
+  group_by(Hour) %>%
+  summarize(Hourly_foraging_totals = sum(Total_Events))
+
+# Merge by Hour
+pot2019_propF_Hour <- as.data.frame(merge(pot2019_alldets_hr, pot2019_foragingdets_hr, by = "Hour"))
+
+pot2019_propF_Hour <- pot2019_propF_Hour %>%
+  mutate(percent_forage = Hourly_foraging_totals/ Hourly_totals_alldets * 100)
+
+plot_pot2019_alldets_hr <- ggplot(pot2019_propF_Hour, aes(x = Hour, y = percent_forage)) +
+  geom_col()+
+  theme_minimal()+
+  scale_y_continuous(name = "Percent Total Foraging Events", limits = c(0,100))+
+  scale_x_continuous(name = "Hour (EST)", breaks = seq(0,23,1))+
+  ggtitle("2019 Potomac Foraging Occurrence")
+plot_pot2019_alldets_hr
 
 # * * * * 2018 ------------------------------------------------------------
 
+#Get Hourly totals for all events
+pot2018_alldets_hr <- filter(HourlyDets, Year == 2018) %>%
+  group_by(Hour) %>%
+  summarize(Hourly_totals_alldets = sum(Total_Events))
+
+# Get Hourly totals for only foraging events
+pot2018_foragingdets_hr <- filter(HourlyDets, Year == 2018) %>%
+  filter(Foraging == TRUE)%>%
+  group_by(Hour) %>%
+  summarize(Hourly_foraging_totals = sum(Total_Events))
+
+# Merge by Hour
+pot2018_propF_Hour <- as.data.frame(merge(pot2018_alldets_hr, pot2018_foragingdets_hr, by = "Hour"))
+
+pot2018_propF_Hour <- pot2018_propF_Hour %>%
+  mutate(percent_forage = Hourly_foraging_totals/ Hourly_totals_alldets * 100)
+
+plot_pot2018_alldets_hr <- ggplot(pot2018_propF_Hour, aes(x = Hour, y = percent_forage)) +
+  geom_col()+
+  theme_minimal()+
+  scale_y_continuous(name = "Percent Total Foraging Events", limits = c(0,100))+
+  scale_x_continuous(name = "Hour (EST)", breaks = seq(0,23,1))+
+  ggtitle("2018 Potomac Foraging Occurrence")
+plot_pot2018_alldets_hr
+
 # * * * * 2017 ------------------------------------------------------------
 
+#Get Hourly totals for all events
+pot2017_alldets_hr <- filter(HourlyDets, Year == 2017) %>%
+  group_by(Hour) %>%
+  summarize(Hourly_totals_alldets = sum(Total_Events))
+
+# Get Hourly totals for only foraging events
+pot2017_foragingdets_hr <- filter(HourlyDets, Year == 2017) %>%
+  filter(Foraging == TRUE)%>%
+  group_by(Hour) %>%
+  summarize(Hourly_foraging_totals = sum(Total_Events))
+
+# Merge by Hour
+pot2017_propF_Hour <- as.data.frame(merge(pot2017_alldets_hr, pot2017_foragingdets_hr, by = "Hour"))
+
+pot2017_propF_Hour <- pot2017_propF_Hour %>%
+  mutate(percent_forage = Hourly_foraging_totals/ Hourly_totals_alldets * 100)
+
+plot_pot2017_alldets_hr <- ggplot(pot2017_propF_Hour, aes(x = Hour, y = percent_forage)) +
+  geom_col()+
+  theme_minimal()+
+  scale_y_continuous(name = "Percent Total Foraging Events", limits = c(0,100))+
+  scale_x_continuous(name = "Hour (EST)", breaks = seq(0,23,1))+
+  ggtitle("2017 Potomac Foraging Occurrence")
+plot_pot2017_alldets_hr
 
 # * * * * 2016 ------------------------------------------------------------
 
+#Get Hourly totals for all events
+pot2016_alldets_hr <- filter(HourlyDets, Year == 2016) %>%
+  group_by(Hour) %>%
+  summarize(Hourly_totals_alldets = sum(Total_Events))
+
+# Get Hourly totals for only foraging events
+pot2016_foragingdets_hr <- filter(HourlyDets, Year == 2016) %>%
+  filter(Foraging == TRUE)%>%
+  group_by(Hour) %>%
+  summarize(Hourly_foraging_totals = sum(Total_Events))
+
+# Merge by Hour
+pot2016_propF_Hour <- as.data.frame(merge(pot2016_alldets_hr, pot2016_foragingdets_hr, by = "Hour"))
+
+pot2016_propF_Hour <- pot2016_propF_Hour %>%
+  mutate(percent_forage = Hourly_foraging_totals/ Hourly_totals_alldets * 100)
+
+plot_pot2016_alldets_hr <- ggplot(pot2016_propF_Hour, aes(x = Hour, y = percent_forage)) +
+  geom_col()+
+  theme_minimal()+
+  scale_y_continuous(name = "Percent Total Foraging Events", limits = c(0,100))+
+  scale_x_continuous(name = "Hour (EST)", breaks = seq(0,23,1))+
+  ggtitle("2016 Potomac Foraging Occurrence")
+plot_pot2016_alldets_hr
 
 # * * * * Combine Plots ---------------------------------------------------
+library(cowplot)
 
-
+pot_hr_all_years <- plot_grid(plot_pot2016_alldets_hr, plot_pot2017_alldets_hr, plot_pot2018_alldets_hr, plot_pot2019_alldets_hr, labels = "AUTO", label_size = 12)
+pot_hr_all_years
 
 # * Foraging Events Only ----------------------------------------------------
 
