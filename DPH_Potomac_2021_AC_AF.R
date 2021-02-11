@@ -139,6 +139,8 @@ dfHourT <- as.data.frame(subset(df_hour, Foraging!="FALSE"))
 
 # Visualize Results -------------------------------------------------------
 
+library(ggplot2)
+
 # * All Dolphin Detections ------------------------------------------------
 # Load in data
 HourlyDets = read.csv("F:/Marine Mammal Lab Work/CPOD_Foraging_2021/Hourly_Dol_Foraging_2021_CPOD/Hourly_Dol_Foraging_2021_CPOD/Hourly_Foraging_Results/Master_All_Hourly_Foraging_NonForaging_Results.csv") 
@@ -158,17 +160,19 @@ HourlyDets$Day <- format(HourlyDets$Date, format = "%d")
 cbp1 <- c("#999999", "#E69F00", "#56B4E9", "#009E73",
           "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 
-#Plot Monthly and Hourly Foraging Event Totals for all years
+# * * Plot Monthly and Hourly Foraging Event Totals for all years ---------
 
-# Month
+# * * * Month ---------------------------------------------------------------
+
 plot_month_all_dets <- ggplot(data = HourlyDets, mapping = aes(x = Month, y = Total_Events, fill = Foraging))+
   geom_bar(stat = "identity", position = "dodge")+
   scale_fill_manual(values = cbp1)+
   scale_y_continuous(name = "Total Detection Events", limits = c(0,50))+
-  ggtitle("Dolphin Foraging Occurence in the Potomac 2019")
+  ggtitle("Dolphin Foraging Occurence in the Potomac")
 plot_month_all_dets
 
-# Hour
+# * * * Hour ----------------------------------------------------------------
+
 plot_hour_all_dets <- ggplot(data = HourlyDets, mapping = aes(x = Hour, y = Total_Events, fill = Foraging))+
   geom_bar(stat = "identity", position = "dodge")+
   scale_fill_manual(values = cbp1)+
@@ -177,17 +181,21 @@ plot_hour_all_dets <- ggplot(data = HourlyDets, mapping = aes(x = Hour, y = Tota
   ggtitle("Dolphin Foraging Occurence in Potomac 2019")
 plot_hour_all_dets
 
-# Proportion of foraging events
 
-# Month
+# * *  Proportion of foraging events --------------------------------------
+
+# * * * Month -------------------------------------------------------------
+
+# * * * * 2019 ------------------------------------------------------------
 
 #Get monthly totals for all events
-pot2019_alldets <- HourlyDets %>%
+pot2019_alldets <- filter(HourlyDets, Year == 2019) %>%
   group_by(Month) %>%
   summarize(Montly_totals_alldets = sum(Total_Events))
 
 # Get monthly totals for only foraging events
-pot2019_foragingdets <- filter(HourlyDets, Foraging == TRUE)%>%
+pot2019_foragingdets <- filter(HourlyDets, Year == 2019) %>%
+  filter(Foraging == TRUE)%>%
   group_by(Month) %>%
   summarize(Montly_foraging_totals = sum(Total_Events))
 
@@ -203,6 +211,111 @@ plot_pot2019_alldets <- ggplot(pot2019_propF_month, aes(x = Month, y = percent_f
   scale_y_continuous(name = "Percent Total Foraging Events", limits = c(0,100))+
   ggtitle("2019 Potomac Foraging Occurrence")
 plot_pot2019_alldets
+
+
+# * * * * 2018 ------------------------------------------------------------
+
+#Get monthly totals for all events
+pot2018_alldets <- filter(HourlyDets, Year == 2018) %>%
+  group_by(Month) %>%
+  summarize(Montly_totals_alldets = sum(Total_Events))
+
+# Get monthly totals for only foraging events
+pot2018_foragingdets <- filter(HourlyDets, Year == 2018) %>%
+  filter(Foraging == TRUE)%>%
+  group_by(Month) %>%
+  summarize(Montly_foraging_totals = sum(Total_Events))
+
+# Merge by Month
+pot2018_propF_month <- as.data.frame(merge(pot2018_alldets, pot2018_foragingdets, by = "Month"))
+
+pot2018_propF_month <- pot2018_propF_month %>%
+  mutate(percent_forage = Montly_foraging_totals/ sum(Montly_totals_alldets) * 100)
+
+plot_pot2018_alldets <- ggplot(pot2018_propF_month, aes(x = Month, y = percent_forage)) +
+  geom_col()+
+  theme_minimal()+
+  scale_y_continuous(name = "Percent Total Foraging Events", limits = c(0,100))+
+  ggtitle("2018 Potomac Foraging Occurrence")
+plot_pot2018_alldets
+
+# * * * * 2017 ------------------------------------------------------------
+
+#Get monthly totals for all events
+pot2017_alldets <- filter(HourlyDets, Year == 2017) %>%
+  group_by(Month) %>%
+  summarize(Montly_totals_alldets = sum(Total_Events))
+
+# Get monthly totals for only foraging events
+pot2017_foragingdets <- filter(HourlyDets, Year == 2017) %>%
+  filter(Foraging == TRUE)%>%
+  group_by(Month) %>%
+  summarize(Montly_foraging_totals = sum(Total_Events))
+
+# Merge by Month
+pot2017_propF_month <- as.data.frame(merge(pot2017_alldets, pot2017_foragingdets, by = "Month"))
+
+pot2017_propF_month <- pot2017_propF_month %>%
+  mutate(percent_forage = Montly_foraging_totals/ sum(Montly_totals_alldets) * 100)
+
+plot_pot2017_alldets <- ggplot(pot2017_propF_month, aes(x = Month, y = percent_forage)) +
+  geom_col()+
+  theme_minimal()+
+  scale_y_continuous(name = "Percent Total Foraging Events", limits = c(0,100))+
+  ggtitle("2017 Potomac Foraging Occurrence")
+plot_pot2017_alldets
+
+# * * * * 2016 ------------------------------------------------------------
+
+#Get monthly totals for all events
+pot2016_alldets <- filter(HourlyDets, Year == 2016) %>%
+  group_by(Month) %>%
+  summarize(Montly_totals_alldets = sum(Total_Events))
+
+# Get monthly totals for only foraging events
+pot2016_foragingdets <- filter(HourlyDets, Year == 2016) %>%
+  filter(Foraging == TRUE)%>%
+  group_by(Month) %>%
+  summarize(Montly_foraging_totals = sum(Total_Events))
+
+# Merge by Month
+pot2016_propF_month <- as.data.frame(merge(pot2016_alldets, pot2016_foragingdets, by = "Month"))
+
+pot2016_propF_month <- pot2016_propF_month %>%
+  mutate(percent_forage = Montly_foraging_totals/ sum(Montly_totals_alldets) * 100)
+
+plot_pot2016_alldets <- ggplot(pot2016_propF_month, aes(x = Month, y = percent_forage)) +
+  geom_col()+
+  theme_minimal()+
+  scale_y_continuous(name = "Percent Total Foraging Events", limits = c(0,100))+
+  ggtitle("2016 Potomac Foraging Occurrence")
+plot_pot2016_alldets
+
+# * * * * Combine Plots ---------------------------------------------------
+library(cowplot)
+
+pot_month_all_years <- plot_grid(plot_pot2016_alldets, plot_pot2017_alldets, plot_pot2018_alldets, plot_pot2019_alldets, labels = "AUTO", label_size = 12)
+pot_month_all_years
+
+# Save as jpeg with 850 x 600 dimensions
+
+# * * * Hour --------------------------------------------------------------
+
+
+# * * * * 2019 ------------------------------------------------------------
+
+
+# * * * * 2018 ------------------------------------------------------------
+
+# * * * * 2017 ------------------------------------------------------------
+
+
+# * * * * 2016 ------------------------------------------------------------
+
+
+# * * * * Combine Plots ---------------------------------------------------
+
+
 
 # * Foraging Events Only ----------------------------------------------------
 
