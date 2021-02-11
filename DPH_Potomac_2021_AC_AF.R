@@ -84,12 +84,36 @@ df_hour <- df %>%
   dplyr:: group_by(Date, Hour)%>%
   dplyr:: count(Foraging)
 
+# * Write CSV file for each result ----------------------------------------
+
+## Note: n = number of detection events in that hour (foraging and non-foraging)
+## df_hour versions
+
+# write.csv(df_hour, "PotomacMay2016_Hrly_Dol_Dets.csv")
+# Note: Manually input the file name from d0 into the first column
+
+# write.csv(df_hour, "PotomacMay2017_Hrly_Dol_Dets.csv")
+# Note: Manually input the file name from d0 into the first column
+
+# write.csv(df_hour, "PotomacJun2017_Hrly_Dol_Dets.csv")
+# Note: Manually input the file name from d0 into the first column
+
+# write.csv(df_hour, "PotomacJun2018_Hrly_Dol_Dets.csv")
+# Note: Manually input the file name from d0 into the first column
+
+# write.csv(df_hour, "PotomacMay2019_Hrly_Dol_Dets.csv")
+# Note: Manually input the file name from d0 into the first column
+
+# write.csv(df_hour, "PotomacOct2019_Hrly_Dol_Dets.csv")
+# Note: Manually input the file name from d0 into the first column
+
+
 # Create new data frame with foraging hours only --------------------------
 
 dfHourT <- as.data.frame(subset(df_hour, Foraging!="FALSE"))
 ## Note: n = number of foraging events in that hour
 
-# Write CSV file for each result ------------------------------------------
+# * Write CSV file for each result ------------------------------------------
 
 ## Once the file is written, go back up to line 48 and change j= to the next
 ## file until all have been analyzed
@@ -112,10 +136,6 @@ dfHourT <- as.data.frame(subset(df_hour, Foraging!="FALSE"))
 # write.csv(dfHourT, "PotomacMay2016_HrlyForaging.csv")
 # Note: Manually input the file name from d0 into the first column
 
-## dfHour versions
-
-# write.csv(df_hour, "PotomacMay2019_Hrly_Dol_Dets.csv")
-# Note: Manually input the file name from d0 into the first column
 
 # Visualize Results -------------------------------------------------------
 
