@@ -140,6 +140,7 @@ dfHourT <- as.data.frame(subset(df_hour, Foraging!="FALSE"))
 # Visualize Results -------------------------------------------------------
 
 library(ggplot2)
+library(tidyr)
 
 # * All Dolphin Detections ------------------------------------------------
 # Load in data
@@ -154,6 +155,8 @@ HourlyDets$Year <- format(HourlyDets$Date, format = "%Y")
 HourlyDets$Month <- format(HourlyDets$Date, format = "%m")
 HourlyDets$Day <- format(HourlyDets$Date, format = "%d")
 
+#write.csv(HourlyDets, "HourlyDets.csv")
+
 # Visualize 
 
 # Load color blind friendly palette
@@ -164,21 +167,60 @@ cbp1 <- c("#999999", "#E69F00", "#56B4E9", "#009E73",
 
 # * * * Month ---------------------------------------------------------------
 
-plot_month_all_dets <- ggplot(data = HourlyDets, mapping = aes(x = Month, y = Total_Events, fill = Foraging))+
-  geom_bar(stat = "identity", position = "dodge")+
+# plot_month_all_dets <- ggplot(data = HourlyDets, mapping = aes(x = Month, y = Total_Events, fill = Foraging))+
+#   geom_bar(stat = "identity", position = "dodge")+
+#   scale_fill_manual(values = cbp1)+
+#   coord_cartesian(ylim = c(0,55))+
+#   #scale_y_continuous(name = "Total Detection Events", limits = c(0,55))+
+#   facet_wrap(~Year)+
+#   ggtitle("Dolphin Detection Events in the Potomac by Month")
+# plot_month_all_dets
+# 
+# a <- filter(HourlyDets, Month == "05" & Year == "2016")
+# # 2016 05 False = 99, not 27 like plot indicates...what's going wrong?
+# 
+# ?geom_bar
+# geom_bar and geom_col are related. Where geom_bar does calcs under 
+# the hood via "stat" and geom_col just takes values you give it and plots.
+# Default stat for geom_bar is "count". I'd changed it to "identity which calls 
+# stat_identity() which tells it to do nothing and in essence,
+# changes geom_bar to geom_col (Which is why it accepted the y argument without warning me
+# that it wasn't actually going to use it) (geom_bar usually warns you that it only needs one of x or y)
+# if you scroll down to the help docs it'll start talking about stat_count, which is what stat = "count" in geom_bar calls
+# it says that it accepts x,y, group, and weight aesthetics those are the arguments that 
+# itll accept in aes() at the top of the help doc, it says "geom_bar() makes the height of the bar proportional to the 
+# number of cases in each group (or if the weight aesthetic is supplied, the sum of the weights)"
+# so, since you want the sum of Total_Events to be shown, you need to write aes(weight = Total_Events) to tell stat_count
+# -- called by stat = 'count' in geom_bar --
+# to sum over that column
+
+#Redo; want the sum of Total_events, so need stat = count and bars to be height of total_events thru weight
+plot_month_all_dets <- ggplot(data = HourlyDets, mapping = aes(x = Month, weight = Total_Events, fill = Foraging))+
+  geom_bar(stat = "count", position = "dodge")+
   scale_fill_manual(values = cbp1)+
-  scale_y_continuous(name = "Total Detection Events", limits = c(0,50))+
-  ggtitle("Dolphin Foraging Occurence in the Potomac")
+  facet_wrap(~Year)+
+  ggtitle("Dolphin Detection Events in the Potomac by Month")
 plot_month_all_dets
 
 # * * * Hour ----------------------------------------------------------------
 
-plot_hour_all_dets <- ggplot(data = HourlyDets, mapping = aes(x = Hour, y = Total_Events, fill = Foraging))+
-  geom_bar(stat = "identity", position = "dodge")+
+# plot_hour_all_dets <- ggplot(data = HourlyDets, mapping = aes(x = Hour, y = Total_Events, fill = Foraging))+
+#   geom_bar(stat = "identity", position = "dodge")+
+#   scale_fill_manual(values = cbp1)+
+#   scale_y_continuous(name = "Total Detection Events", breaks = seq(0,55,5))+
+#   scale_x_continuous(name = "Hour (EST)", breaks = seq(0,23,1))+
+#   facet_wrap(~Year)+
+#   ggtitle("Dolphin Detection Events in the Potomac by Hour")
+# plot_hour_all_dets
+
+#Redo; want the sum of Total_events, so need stat = count and bars to be height of total_events thru weight
+plot_hour_all_dets <- ggplot(data = HourlyDets, mapping = aes(x = Hour, weight = Total_Events, fill = Foraging))+
+  geom_bar(stat = "count", position = "dodge")+
   scale_fill_manual(values = cbp1)+
-  scale_y_continuous(name = "Total Detection Events", breaks = seq(0,55,5))+
   scale_x_continuous(name = "Hour (EST)", breaks = seq(0,23,1))+
-  ggtitle("Dolphin Foraging Occurence in Potomac 2019")
+  scale_y_continuous(name = "Total Detection Events", breaks = seq(0,500,100))+
+  facet_wrap(~Year)+
+  ggtitle("Dolphin Detection Events in the Potomac by Hour")
 plot_hour_all_dets
 
 
