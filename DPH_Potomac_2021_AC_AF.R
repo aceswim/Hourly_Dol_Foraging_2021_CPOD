@@ -53,9 +53,9 @@ f0 <- fread(input = paste(CPODdata,filenames[j], sep = '/'))
 f0$ChunkEnd <- as.POSIXct(f0$ChunkEnd, format = '%d/%m/%Y %H:%M') #Check whether y(17) or Y(2017)
 
 f0$lnICIus <- log(f0$ICIus)
-f0$Foraging <- f0$lnICIus < 9.201 #set limit to only include foraging buzzes
+f0$Foraging <- f0$lnICIus < 9.201 # set limit to label foraging buzzes TRUE
 f1 <- aggregate(lnICIus ~ ChunkEnd, FUN = mean, data = f0) # get the mean ICI per minute
-f2 <- aggregate(Foraging ~ ChunkEnd, FUN = any, data = f0) # select only foraging minutes
+f2 <- aggregate(Foraging ~ ChunkEnd, FUN = any, data = f0) 
 f1 <- merge(f1, f2) # merge the two
 f1 <- f1[order(f1$ChunkEnd), ] #just ordering in time
 
@@ -107,6 +107,8 @@ df_hour <- df %>%
 # write.csv(df_hour, "PotomacOct2019_Hrly_Dol_Dets.csv")
 # Note: Manually input the file name from d0 into the first column
 
+# write.csv(df_hour, "PotomacMay2020_Hrly_Dol_Dets.csv")
+# Note: Manually input the file name from d0 into the first column
 
 # Create new data frame with foraging hours only --------------------------
 
@@ -134,6 +136,9 @@ dfHourT <- as.data.frame(subset(df_hour, Foraging!="FALSE"))
 # Note: Manually input the file name from d0 into the first column
 
 # write.csv(dfHourT, "PotomacMay2016_HrlyForaging.csv")
+# Note: Manually input the file name from d0 into the first column
+
+# write.csv(dfHourT, "PotomacMay2020_HrlyForaging.csv")
 # Note: Manually input the file name from d0 into the first column
 
 
