@@ -69,7 +69,7 @@ d0 <- fread(paste(CPODdata,DPMfilenames[j], sep = '/'))
 d0 <- d0[d0$MinsOn==1,]
 # sort out the ChunkEnd into DateTime
 d0$ChunkEnd <- as.POSIXct(d0$ChunkEnd, format = '%d/%m/%Y %H:%M')
-#Remove the rows with "0" presence:
+# Remove the rows with "0" presence:
 d0$DPM<-as.integer(d0$DPM)
 
 # Create new data frame that merges d0 and f1 by ChunkEnd -----------------
