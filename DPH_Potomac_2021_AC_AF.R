@@ -160,7 +160,7 @@ HourlyDets$Year <- format(HourlyDets$Date, format = "%Y")
 HourlyDets$Month <- format(HourlyDets$Date, format = "%m")
 HourlyDets$Day <- format(HourlyDets$Date, format = "%d")
 
-#write.csv(HourlyDets, "HourlyDets.csv")
+# write.csv(HourlyDets, "HourlyDets.csv")
 
 # Visualize 
 
@@ -204,7 +204,7 @@ plot_month_all_dets <- ggplot(data = HourlyDets, mapping = aes(x = Month, weight
   geom_bar(stat = "count", position = "dodge")+
   scale_fill_manual(values = cbp1)+
   facet_wrap(~Year)+
-  ggtitle("Dolphin Detection Events in the Potomac by Month")
+  ggtitle("Dolphin Detection Events in the Potomac")
 plot_month_all_dets
 
 # * * * Hour ----------------------------------------------------------------
@@ -232,6 +232,32 @@ plot_hour_all_dets
 # * *  Proportion of foraging events --------------------------------------
 
 # * * * Month -------------------------------------------------------------
+
+# * * * * 2020 ------------------------------------------------------------
+
+#Get monthly totals for all events
+pot2020_alldets <- filter(HourlyDets, Year == 2020) %>%
+  group_by(Month) %>%
+  summarize(Monthly_totals_alldets = sum(Total_Events))
+
+# Get monthly totals for only foraging events
+pot2020_foragingdets <- filter(HourlyDets, Year == 2020) %>%
+  filter(Foraging == TRUE)%>%
+  group_by(Month) %>%
+  summarize(Monthly_foraging_totals = sum(Total_Events))
+
+# Merge by Month
+pot2020_propF_month <- as.data.frame(merge(pot2020_alldets, pot2020_foragingdets, by = "Month"))
+
+pot2020_propF_month <- pot2020_propF_month %>%
+  mutate(percent_forage = Monthly_foraging_totals/ Monthly_totals_alldets * 100)
+
+plot_pot2020_alldets <- ggplot(pot2020_propF_month, aes(x = Month, y = percent_forage)) +
+  geom_col()+
+  theme_minimal()+
+  scale_y_continuous(name = "Percent Total Foraging Events", limits = c(0,100))+
+  ggtitle("2020 Potomac Foraging Occurrence")
+plot_pot2020_alldets
 
 # * * * * 2019 ------------------------------------------------------------
 
@@ -341,12 +367,39 @@ plot_pot2016_alldets
 # * * * * Combine Plots ---------------------------------------------------
 library(cowplot)
 
-pot_month_all_years <- plot_grid(plot_pot2016_alldets, plot_pot2017_alldets, plot_pot2018_alldets, plot_pot2019_alldets, labels = "AUTO", label_size = 12)
+pot_month_all_years <- plot_grid(plot_pot2016_alldets, plot_pot2017_alldets, plot_pot2018_alldets, plot_pot2019_alldets, plot_pot2020_alldets, labels = "AUTO", label_size = 12)
 pot_month_all_years
 
 # Save as jpeg with 850 x 600 dimensions
 
 # * * * Hour --------------------------------------------------------------
+
+# * * * * 2020 ------------------------------------------------------------
+
+#Get Hourly totals for all events
+pot2020_alldets_hr <- filter(HourlyDets, Year == 2020) %>%
+  group_by(Hour) %>%
+  summarize(Hourly_totals_alldets = sum(Total_Events))
+
+# Get Hourly totals for only foraging events
+pot2020_foragingdets_hr <- filter(HourlyDets, Year == 2020) %>%
+  filter(Foraging == TRUE)%>%
+  group_by(Hour) %>%
+  summarize(Hourly_foraging_totals = sum(Total_Events))
+
+# Merge by Hour
+pot2020_propF_Hour <- as.data.frame(merge(pot2020_alldets_hr, pot2020_foragingdets_hr, by = "Hour"))
+
+pot2020_propF_Hour <- pot2020_propF_Hour %>%
+  mutate(percent_forage = Hourly_foraging_totals/ Hourly_totals_alldets * 100)
+
+plot_pot2020_alldets_hr <- ggplot(pot2020_propF_Hour, aes(x = Hour, y = percent_forage)) +
+  geom_col()+
+  theme_minimal()+
+  scale_y_continuous(name = "Percent Total Foraging Events", limits = c(0,100))+
+  scale_x_continuous(name = "Hour (EST)", breaks = seq(0,23,1))+
+  ggtitle("2020 Potomac Foraging Occurrence")
+plot_pot2020_alldets_hr
 
 # * * * * 2019 ------------------------------------------------------------
 
@@ -459,7 +512,7 @@ plot_pot2016_alldets_hr
 # * * * * Combine Plots ---------------------------------------------------
 library(cowplot)
 
-pot_hr_all_years <- plot_grid(plot_pot2016_alldets_hr, plot_pot2017_alldets_hr, plot_pot2018_alldets_hr, plot_pot2019_alldets_hr, labels = "AUTO", label_size = 12)
+pot_hr_all_years <- plot_grid(plot_pot2016_alldets_hr, plot_pot2017_alldets_hr, plot_pot2018_alldets_hr, plot_pot2019_alldets_hr, plot_pot2020_alldets_hr, labels = "AUTO", label_size = 12)
 pot_hr_all_years
 
 # * Foraging Events Only ----------------------------------------------------
