@@ -374,6 +374,81 @@ pot_month_all_years
 
 # Save as jpeg with 850 x 600 dimensions
 
+
+# Final Plot: Average %Forage by month for all years with SD ----------------------------
+
+# Average: 
+# Get monthly totals for all events
+pot_alldets <- HourlyDets %>%
+  group_by(Month, Year) %>%
+  summarize(Monthly_totals_alldets = sum(Total_Events))
+
+pot_alldets2 <- pot_alldets %>%
+  group_by(Month) %>%
+  summarize(Avg_monthly_totals_alldets = round(mean(Monthly_totals_alldets)))
+
+# Get monthly totals for only foraging events
+pot_foragingdets <- HourlyDets %>%
+  filter(Foraging == TRUE)%>%
+  group_by(Month, Year) %>%
+  summarize(Monthly_foraging_totals = sum(Total_Events))
+
+pot_foragingdets2 <- pot_foragingdets %>%
+  group_by(Month) %>%
+  summarize(Avg_monthly_foraging_totals = round(mean(Monthly_foraging_totals)))
+
+# Merge by Month
+
+pot_avg_propF_month <- as.data.frame(merge(pot_alldets2, pot_foragingdets2, by = "Month"))
+
+pot_avg_propF_month <- pot_avg_propF_month %>%
+  mutate(percent_forage = round(Avg_monthly_foraging_totals/ Avg_monthly_totals_alldets * 100))
+
+# Totals
+
+pot_alldets_tot <- HourlyDets %>%
+  group_by(Month) %>%
+  summarize(Monthly_totals_alldets = sum(Total_Events))
+
+pot_alldets_StErr <- HourlyDets %>%
+  group_by(Month) %>%
+  summarize(StErr = (sd(Total_Events)/sqrt(length(Total_Events))))
+
+pot_foragingdets_tot <- HourlyDets %>%
+  filter(Foraging == TRUE)%>%
+  group_by(Month) %>%
+  summarize(Monthly_foraging_totals = sum(Total_Events))
+
+pot_propF_month <- as.data.frame(merge(pot_alldets_tot, pot_foragingdets_tot, by = "Month"))
+
+pot_propF_month <- as.data.frame(merge(pot_propF_month, pot_alldets_StErr, by = "Month"))
+
+pot_propF_month <- pot_propF_month %>%
+  mutate(percent_forage = round(Monthly_foraging_totals/ Monthly_totals_alldets * 100))
+
+
+# pot_propF_month <- mutate(pot_propF_month, Month_Abrev = case_when(
+#     Month == 04              ~ "APR",
+#     Month == 05              ~ "MAY",
+#     Month == 06              ~ "JUN",
+#     Month == 07              ~ "JUL",
+#     Month == 08              ~ "AUG",
+#     Month == 09              ~ "SEP",
+#     Month == 10              ~ "OCT",
+#     TRUE                     ~ "NOV" 
+#   ))
+
+monthlbs <- c("APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV")
+
+mean_month_plot <- ggplot(pot_propF_month, aes(x = Month, y = percent_forage)) +
+  geom_col()+
+  theme_minimal()+
+  scale_y_continuous(name = "Percent Total Foraging Events", limits = c(0,100))+
+  ggtitle("Potomac Foraging Occurrence")+
+  scale_x_discrete(labels= monthlbs)+
+  geom_errorbar(aes(ymin = percent_forage - StErr, ymax = percent_forage - StErr), width=.1)
+mean_month_plot
+
 # * * * Hour --------------------------------------------------------------
 
 # * * * * 2020 ------------------------------------------------------------
