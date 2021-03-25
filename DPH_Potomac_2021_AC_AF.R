@@ -599,6 +599,48 @@ library(cowplot)
 pot_hr_all_years <- plot_grid(plot_pot2016_alldets_hr, plot_pot2017_alldets_hr, plot_pot2018_alldets_hr, plot_pot2019_alldets_hr, plot_pot2020_alldets_hr, labels = "AUTO", label_size = 12)
 pot_hr_all_years
 
+
+# Final Plot: Average %Forage by hour for all years with SD ---------------
+
+# Totals
+
+pot_alldets_tot_hr <- HourlyDets %>%
+  group_by(Hour) %>%
+  summarize(Hourly_totals_alldets = sum(Total_Events))
+
+pot_alldets_StDev_hr <- HourlyDets %>%
+  group_by(Hour) %>%
+  summarize(StDev = (sd(Total_Events)))
+
+pot_alldets_tot_hr <- as.data.frame(merge(pot_alldets_tot_hr, pot_alldets_StDev_hr, by = "Hour"))
+
+pot_alldets_tot_hr <- mutate(pot_alldets_tot_hr, StErr = StDev/(sqrt(Hourly_totals_alldets)))
+
+
+pot_foragingdets_tot_hr <- HourlyDets %>%
+  filter(Foraging == TRUE)%>%
+  group_by(Hour) %>%
+  summarize(Hourly_foraging_totals = sum(Total_Events))
+
+pot_propF_Hour <- as.data.frame(merge(pot_alldets_tot_hr, pot_foragingdets_tot_hr, by = "Hour"))
+
+pot_propF_Hour <- pot_propF_Hour %>%
+  mutate(percent_forage = round(Hourly_foraging_totals/ Hourly_totals_alldets * 100))
+
+
+hourlbs <- c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23")
+
+mean_hour_plot <- ggplot(pot_propF_Hour, aes(x = Hour, y = percent_forage)) +
+  geom_col()+
+  theme_minimal()+
+  scale_y_continuous(name = "Percent Total Foraging Events", limits = c(0,60,10))+
+  ggtitle("Potomac Foraging Occurrence from 2016-2020")+
+  scale_x_continuous(name = "Hour (EST)", breaks = seq(0,23,1))+
+  geom_errorbar(aes(ymin = (percent_forage - StDev), ymax = (percent_forage + StDev), width=.1))+
+  geom_text(aes(label = (round(StDev)), y = percent_forage + StDev), vjust = -0.5)
+mean_hour_plot
+
+
 # * Foraging Events Only ----------------------------------------------------
 
 # Load in data
