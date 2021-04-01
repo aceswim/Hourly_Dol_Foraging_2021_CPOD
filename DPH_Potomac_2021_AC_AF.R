@@ -452,8 +452,8 @@ mean_month_plot <- ggplot(pot_propF_month, aes(x = Month, y = percent_forage)) +
   scale_y_continuous(name = "Percent Total Foraging Events", limits = c(0,60,10))+
   ggtitle("Potomac Foraging Occurrence from 2016-2020")+
   scale_x_discrete(labels= monthlbs)+
-  geom_errorbar(aes(ymin = (percent_forage - StDev), ymax = (percent_forage + StDev), width=.1))+
-  geom_text(aes(label = (round(StDev)), y = percent_forage + StDev), vjust = -0.5)
+  geom_errorbar(aes(ymin = (percent_forage - StDev), ymax = (percent_forage + StDev), width=.1))#+
+  #geom_text(aes(label = (round(StDev)), y = percent_forage + StDev), vjust = -0.5)
 mean_month_plot
 
 # * * * Hour --------------------------------------------------------------
@@ -636,8 +636,8 @@ mean_hour_plot <- ggplot(pot_propF_Hour, aes(x = Hour, y = percent_forage)) +
   scale_y_continuous(name = "Percent Total Foraging Events", limits = c(0,60,10))+
   ggtitle("Potomac Foraging Occurrence from 2016-2020")+
   scale_x_continuous(name = "Hour (EST)", breaks = seq(0,23,1))+
-  geom_errorbar(aes(ymin = (percent_forage - StDev), ymax = (percent_forage + StDev), width=.1))+
-  geom_text(aes(label = (round(StDev)), y = percent_forage + StDev), vjust = -0.5)
+  geom_errorbar(aes(ymin = (percent_forage - StDev), ymax = (percent_forage + StDev), width=.1))#+
+  #geom_text(aes(label = (round(StDev)), y = percent_forage + StDev), vjust = -0.5)
 mean_hour_plot
 
 
