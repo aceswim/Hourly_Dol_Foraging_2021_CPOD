@@ -446,11 +446,15 @@ pot_propF_month <- pot_propF_month %>%
 
 monthlbs <- c("APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV")
 
+# Load color blind friendly palette
+cbp1 <- c("#999999", "#E69F00", "#56B4E9", "#009E73",
+          "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
 mean_month_plot <- ggplot(pot_propF_month, aes(x = Month, y = percent_forage)) +
-  geom_col()+
+  geom_col(fill = "#56B4E9")+
   theme_minimal()+
   scale_y_continuous(name = "Percent Total Foraging Events", limits = c(0,60,10))+
-  ggtitle("Potomac Foraging Occurrence from 2016-2020")+
+  ggtitle("Monthly Foraging Occurrence")+
   scale_x_discrete(labels= monthlbs)+
   geom_errorbar(aes(ymin = (percent_forage - StDev), ymax = (percent_forage + StDev), width=.1))#+
   #geom_text(aes(label = (round(StDev)), y = percent_forage + StDev), vjust = -0.5)
@@ -631,15 +635,46 @@ pot_propF_Hour <- pot_propF_Hour %>%
 hourlbs <- c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23")
 
 mean_hour_plot <- ggplot(pot_propF_Hour, aes(x = Hour, y = percent_forage)) +
-  geom_col()+
+  geom_col(fill = "#E69F00")+
   theme_minimal()+
   scale_y_continuous(name = "Percent Total Foraging Events", limits = c(0,60,10))+
-  ggtitle("Potomac Foraging Occurrence from 2016-2020")+
+  ggtitle("Hourly Foraging Occurrence")+
   scale_x_continuous(name = "Hour (EST)", breaks = seq(0,23,1))+
   geom_errorbar(aes(ymin = (percent_forage - StDev), ymax = (percent_forage + StDev), width=.1))#+
   #geom_text(aes(label = (round(StDev)), y = percent_forage + StDev), vjust = -0.5)
 mean_hour_plot
 
+# Load color blind friendly palette
+cbp1 <- c("#999999", "#E69F00", "#56B4E9", "#009E73",
+          "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+
+# * Combine Average Monthly and Hourly Plots ------------------------------
+
+library(cowplot)
+
+pot_avg_hr_all_years <- plot_grid(mean_month_plot, mean_hour_plot, labels = "AUTO", label_size = 12)
+
+#add title
+title <- ggdraw()+
+  draw_label(
+    "Dolphin Foraging Occurrence within the Potomac River from 2016-2020",
+    fontface = 'bold',
+    x = 0,
+    hjust = 0
+  )+
+  theme(
+    # add margin on the left of the drawing canvas,
+    # so title is aligned with left edge of first plot
+    plot.margin = margin(0, 0, 0, 7)
+  )
+
+p1 <- plot_grid(title, pot_avg_hr_all_years,
+          ncol = 1,
+          # rel_heights values control vertical title margins
+          rel_heights = c(0.1, 1))
+p1
+          
 
 # * Foraging Events Only ----------------------------------------------------
 
